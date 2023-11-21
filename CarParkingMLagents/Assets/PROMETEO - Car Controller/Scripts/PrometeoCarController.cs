@@ -293,6 +293,7 @@ public class PrometeoCarController : MonoBehaviour
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           GoForward();
+          
         }
         if(reversePTI.buttonPressed){
           CancelInvoke("DecelerateCar");
@@ -331,18 +332,23 @@ public class PrometeoCarController : MonoBehaviour
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           GoForward();
+          //Debug.Log(throttleAxis);
         }
         if(Input.GetKey(KeyCode.S)){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           GoReverse();
+          //Debug.Log(throttleAxis);
+
         }
 
         if(Input.GetKey(KeyCode.A)){
           TurnLeft();
+          //Debug.Log(steeringAxis);
         }
         if(Input.GetKey(KeyCode.D)){
           TurnRight();
+          //Debug.Log(steeringAxis);
         }
         if(Input.GetKey(KeyCode.Space)){
           CancelInvoke("DecelerateCar");
@@ -769,6 +775,137 @@ public class PrometeoCarController : MonoBehaviour
 
         driftingAxis = 0f;
       }
+    }
+
+    //method to move the car given the neural network output
+    public void move(float throttle, float steering)
+    {
+        //go forward
+        if( throttle > throttleAxis)
+        {
+            //If the forces aplied to the rigidbody in the 'x' asis are greater than
+            //3f, it means that the car is losing traction, then the car will start emitting particle systems.
+            if (Mathf.Abs(localVelocityX) > 2.5f)
+            {
+                isDrifting = true;
+                DriftCarPS();
+            }
+            else
+            {
+                isDrifting = false;
+                DriftCarPS();
+            }
+            // The following part sets the throttle power to 1 smoothly.
+            throttleAxis = throttle;
+            if (throttleAxis > 1f)
+            {
+                throttleAxis = 1f;
+            }
+            //If the car is going backwards, then apply brakes in order to avoid strange
+            //behaviours. If the local velocity in the 'z' axis is less than -1f, then it
+            //is safe to apply positive torque to go forward.
+            if (localVelocityZ < -1f)
+            {
+                Brakes();
+            }
+            else
+            {
+                if (Mathf.RoundToInt(carSpeed) < maxSpeed)
+                {
+                    //Apply positive torque in all wheels to go forward if maxSpeed has not been reached.
+                    frontLeftCollider.brakeTorque = 0;
+                    frontLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                    frontRightCollider.brakeTorque = 0;
+                    frontRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                    rearLeftCollider.brakeTorque = 0;
+                    rearLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                    rearRightCollider.brakeTorque = 0;
+                    rearRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                }
+                else
+                {
+                    // If the maxSpeed has been reached, then stop applying torque to the wheels.
+                    // IMPORTANT: The maxSpeed variable should be considered as an approximation; the speed of the car
+                    // could be a bit higher than expected.
+                    frontLeftCollider.motorTorque = 0;
+                    frontRightCollider.motorTorque = 0;
+                    rearLeftCollider.motorTorque = 0;
+                    rearRightCollider.motorTorque = 0;
+                }
+            }
+        }
+
+        //go reverse
+        else if( throttle < throttleAxis) 
+        {
+            //If the forces aplied to the rigidbody in the 'x' asis are greater than
+            //3f, it means that the car is losing traction, then the car will start emitting particle systems.
+            if (Mathf.Abs(localVelocityX) > 2.5f)
+            {
+                isDrifting = true;
+                DriftCarPS();
+            }
+            else
+            {
+                isDrifting = false;
+                DriftCarPS();
+            }
+            // The following part sets the throttle power to -1 smoothly.
+            throttleAxis = throttle;
+            if (throttleAxis < -1f)
+            {
+                throttleAxis = -1f;
+            }
+            //If the car is still going forward, then apply brakes in order to avoid strange
+            //behaviours. If the local velocity in the 'z' axis is greater than 1f, then it
+            //is safe to apply negative torque to go reverse.
+            if (localVelocityZ > 1f)
+            {
+                Brakes();
+            }
+            else
+            {
+                if (Mathf.Abs(Mathf.RoundToInt(carSpeed)) < maxReverseSpeed)
+                {
+                    //Apply negative torque in all wheels to go in reverse if maxReverseSpeed has not been reached.
+                    frontLeftCollider.brakeTorque = 0;
+                    frontLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                    frontRightCollider.brakeTorque = 0;
+                    frontRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                    rearLeftCollider.brakeTorque = 0;
+                    rearLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                    rearRightCollider.brakeTorque = 0;
+                    rearRightCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
+                }
+                else
+                {
+                    //If the maxReverseSpeed has been reached, then stop applying torque to the wheels.
+                    // IMPORTANT: The maxReverseSpeed variable should be considered as an approximation; the speed of the car
+                    // could be a bit higher than expected.
+                    frontLeftCollider.motorTorque = 0;
+                    frontRightCollider.motorTorque = 0;
+                    rearLeftCollider.motorTorque = 0;
+                    rearRightCollider.motorTorque = 0;
+                }
+            }
+        }
+
+
+        steeringAxis = steering;
+        if (steeringAxis < -1f)
+        {
+            steeringAxis = -1f;
+        }
+
+        if (steeringAxis > 1f)
+        {
+            steeringAxis = 1f;
+        }
+
+        var steeringAngle = steeringAxis * maxSteeringAngle;
+        frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, steeringAngle, steeringSpeed);
+        frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, steeringAngle, steeringSpeed);
+
     }
 
 }
