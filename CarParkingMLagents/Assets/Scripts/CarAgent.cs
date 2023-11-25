@@ -12,7 +12,7 @@ public class CarAgent : Agent
     // Start is called before the first frame update
     void Start()
     {
-        
+        carController = GetComponent<PrometeoCarController>();
     }
 
     public override void OnEpisodeBegin()
@@ -22,13 +22,21 @@ public class CarAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        
+        sensor.AddObservation(carController.carSpeed);
        
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        
+        carController.move(actions.ContinuousActions[0], actions.ContinuousActions[1]);
+
+    }
+
+    public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        var continuousActionsOut = actionsOut.ContinuousActions;
+        continuousActionsOut[0] = Input.GetAxis("Vertical");
+        continuousActionsOut[1] = Input.GetAxis("Horizontal");
     }
 
 
