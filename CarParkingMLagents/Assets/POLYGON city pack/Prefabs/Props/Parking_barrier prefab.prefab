@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4061960552898642}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Parking_barrier prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 33264077409791108}
   - component: {fileID: 23311053643356628}
   - component: {fileID: 65493770882244690}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Barrier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 33038163512055292}
   - component: {fileID: 23686140622228696}
   - component: {fileID: 65388140836462866}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Parking_barrier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
