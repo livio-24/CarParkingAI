@@ -5,6 +5,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using System.Threading;
+using Unity.VisualScripting;
 
 public class CarAgent : Agent
 {
@@ -14,7 +15,9 @@ public class CarAgent : Agent
     Transform carTransform;
     Rigidbody rBody;
     private float timer = 2f;
-
+    public BoxCollider spawnArea1;
+    public BoxCollider spawnArea2;
+    private bool parked;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,21 +27,49 @@ public class CarAgent : Agent
         carTransform = GetComponent<Transform>();
         rBody = GetComponentInChildren<Rigidbody>();
     }
-    
+    void SpawnObject()
+    {
+        float randomX;
+        float randomZ;
+
+        // Genera posizioni casuali nelle due zone ortogonali
+        if (Random.Range(0, 2) == 0)
+        {
+            randomX = Random.Range(spawnArea1.bounds.min.x, spawnArea1.bounds.max.x);
+            randomZ = Random.Range(spawnArea1.bounds.min.z, spawnArea1.bounds.max.z);
+        }
+        else
+        {
+            randomX = Random.Range(spawnArea2.bounds.min.x, spawnArea2.bounds.max.x);
+            randomZ = Random.Range(spawnArea2.bounds.min.z, spawnArea2.bounds.max.z);
+        }
+
+        Vector3 spawnPosition = new Vector3(randomX, 0.1f, randomZ);
+        Vector3 rotationAngles = new Vector3(0f, Random.Range(0,360), 0f); // Modifica questi valori a seconda delle tue esigenze
+
+        // Converti il Vector3 in un Quaternion
+        Quaternion rotationQuaternion = Quaternion.Euler(rotationAngles);
+        carTransform.position = spawnPosition;
+        carTransform.rotation = rotationQuaternion;
+ 
+    }
+
     public override void OnEpisodeBegin()
     {
+        SpawnObject();
+        parked = false;
         rBody.velocity = Vector3.zero;
         carController.ThrottleOff();
 
         //spawn random
         // Set the initial position and rotation of the car
-        carTransform.position = new Vector3(0f, 0.09445577f, 0f); // Adjust the position as needed
+        //carTransform.position = new Vector3(0f, 0.09445577f, 0f); // Adjust the position as needed
         // Specifica gli angoli di rotazione attorno agli assi x, y e z
-        Vector3 rotationAngles = new Vector3(0f, -90f, 0f); // Modifica questi valori a seconda delle tue esigenze
+        //Vector3 rotationAngles = new Vector3(0f, -90f, 0f); // Modifica questi valori a seconda delle tue esigenze
 
         // Converti il Vector3 in un Quaternion
-        Quaternion rotationQuaternion = Quaternion.Euler(rotationAngles);
-        carTransform.rotation = rotationQuaternion; // Set the rotation to the identity (no rotation)
+        //Quaternion rotationQuaternion = Quaternion.Euler(rotationAngles);
+        //carTransform.rotation = rotationQuaternion; // Set the rotation to the identity (no rotation)
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -82,7 +113,7 @@ public class CarAgent : Agent
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "target")
+        if (other.gameObject.CompareTag("target"))
         {
             AddReward(0.5f);
             Debug.Log(GetCumulativeReward());
@@ -101,6 +132,8 @@ public class CarAgent : Agent
                 {
                     timer = 2.0f;
                     AddReward(1.0f);
+                    parked = true;
+                    Debug.Log(GetCumulativeReward());
                     EndEpisode();
                 }
                 Debug.Log("car in");
@@ -112,9 +145,10 @@ public class CarAgent : Agent
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("target"))
+        if (other.gameObject.CompareTag("target") && !parked)
         {
             AddReward(-0.5f);
+            Debug.Log(GetCumulativeReward());
             timer = 2.0f;
         }
     }

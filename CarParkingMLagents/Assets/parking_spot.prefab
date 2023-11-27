@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 779302142165199484}
   - component: {fileID: 8143919633523150280}
   - component: {fileID: 3223516819225563734}
-  - component: {fileID: -9137057366463700709}
   m_Layer: 6
   m_Name: parking_spot
   m_TagString: target
@@ -96,15 +95,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-9137057366463700709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1542209435337037063}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8430140eacf4c8d4695b6c99bf185b61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
