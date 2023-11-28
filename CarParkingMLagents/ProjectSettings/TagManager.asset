@@ -7,14 +7,15 @@ TagManager:
   - wall
   - line
   - target
+  - agent
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - wall
   - Water
   - UI
-  - 
+  - target
   - 
   - 
   - 

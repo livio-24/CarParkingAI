@@ -325,8 +325,8 @@ public class PrometeoCarController : MonoBehaviour
         if(!turnLeftPTI.buttonPressed && !turnRightPTI.buttonPressed && steeringAxis != 0f){
           ResetSteeringAngle();
         }
-
-      }else{
+         
+      }/*else{
 
         if(Input.GetKey(KeyCode.W)){
           CancelInvoke("DecelerateCar");
@@ -370,6 +370,7 @@ public class PrometeoCarController : MonoBehaviour
         }
 
       }
+         */
 
 
       // We call the method AnimateWheelMeshes() in order to match the wheel collider movements with the 3D meshes of the wheels.
@@ -781,7 +782,7 @@ public class PrometeoCarController : MonoBehaviour
     public void move(float throttle, float steering)
     {
         //go forward
-        if( throttle > throttleAxis)
+        if( throttle > 0)
         {
             //If the forces aplied to the rigidbody in the 'x' asis are greater than
             //3f, it means that the car is losing traction, then the car will start emitting particle systems.
@@ -836,7 +837,7 @@ public class PrometeoCarController : MonoBehaviour
         }
 
         //go reverse
-        else if( throttle < throttleAxis) 
+        else if( throttle < 0) 
         {
             //If the forces aplied to the rigidbody in the 'x' asis are greater than
             //3f, it means that the car is losing traction, then the car will start emitting particle systems.
@@ -890,6 +891,11 @@ public class PrometeoCarController : MonoBehaviour
             }
         }
 
+        else
+        {
+            ThrottleOff();
+        }
+
 
         steeringAxis = steering;
         if (steeringAxis < -1f)
@@ -905,6 +911,9 @@ public class PrometeoCarController : MonoBehaviour
         var steeringAngle = steeringAxis * maxSteeringAngle;
         frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, steeringAngle, steeringSpeed);
         frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, steeringAngle, steeringSpeed);
+
+        //Debug.Log("Throttle: " + throttleAxis);
+        //Debug.Log("Steering: " + steeringAxis);
 
     }
 
