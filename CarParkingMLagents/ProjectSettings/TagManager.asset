@@ -8,15 +8,18 @@ TagManager:
   - line
   - target
   - agent
+  - parking_floor
+  - floor_obstacle
+  - obstacle
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - wall
+  - obstacle
   - Water
   - UI
   - target
-  - 
+  - floor_obstacle
   - 
   - 
   - 

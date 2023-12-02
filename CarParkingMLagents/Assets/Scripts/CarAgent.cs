@@ -17,7 +17,11 @@ public class CarAgent : Agent
     private float timer = 2f;
     public BoxCollider spawnArea1;
     public BoxCollider spawnArea2;
+    public Transform parkingEntrance;
     private bool parked;
+    private bool inParking;
+    public GameObject parkingFloor;
+    public float parkingDistanceTreshold;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +30,7 @@ public class CarAgent : Agent
         coll = GetComponentInChildren<MeshCollider>();
         carTransform = GetComponent<Transform>();
         rBody = GetComponentInChildren<Rigidbody>();
+        //inParking = true;
     }
     void SpawnObject()
     {
@@ -49,15 +54,15 @@ public class CarAgent : Agent
 
         // Converti il Vector3 in un Quaternion
         Quaternion rotationQuaternion = Quaternion.Euler(rotationAngles);
-        carTransform.position = spawnPosition;
-        carTransform.rotation = rotationQuaternion;
+        rBody.position = spawnPosition;
+        rBody.rotation = rotationQuaternion;
  
     }
 
     public override void OnEpisodeBegin()
     {
         SpawnObject();
-        parked = false;
+        //parked = false;
         rBody.velocity = Vector3.zero;
         carController.ThrottleOff();
 
@@ -82,6 +87,8 @@ public class CarAgent : Agent
     {
         carController.move(actions.ContinuousActions[0], actions.ContinuousActions[1]);
         CheckGroundHit();
+        checkParkingDistance();
+        Debug.Log(GetCumulativeReward());
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -94,20 +101,21 @@ public class CarAgent : Agent
     private void OnCollisionEnter(Collision collision)
     {
        
-        if (collision.gameObject.layer == 3)
+        if (collision.gameObject.CompareTag("obstacle"))
         {
             AddReward(-1.0f);
-            Debug.Log(GetCumulativeReward());
+            EndEpisode();
+            //Debug.Log(GetCumulativeReward());
         }
 
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.layer == 3)
+        if (collision.gameObject.CompareTag("obstacle"))
         {
-            AddReward(-0.2f);
-            Debug.Log(GetCumulativeReward());
+            AddReward(-0.1f);
+            //Debug.Log(GetCumulativeReward());
         }
     }
 
@@ -116,29 +124,33 @@ public class CarAgent : Agent
         if (other.gameObject.CompareTag("target"))
         {
             AddReward(0.5f);
-            Debug.Log(GetCumulativeReward());
+            //Debug.Log(GetCumulativeReward());
+        }
+
+        if(other.gameObject.CompareTag("parking_floor"))
+        {
+            inParking = true;
+            //Debug.Log(inParking);
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("target"))
+        if (other.gameObject.CompareTag("target") && (other.bounds.Contains(coll.bounds.max) && other.bounds.Contains(coll.bounds.min)))
         {
-            if (other.bounds.Contains(coll.bounds.max) && other.bounds.Contains(coll.bounds.min))
+            // Decrementa il timer
+            timer -= Time.deltaTime;
+            if(timer <= 0.0f)
             {
-                // Decrementa il timer
-                timer -= Time.deltaTime;
-                if(timer <= 0.0f)
-                {
-                    timer = 2.0f;
-                    AddReward(1.0f);
-                    parked = true;
-                    Debug.Log(GetCumulativeReward());
-                    EndEpisode();
-                }
-                Debug.Log("car in");
+                timer = 2.0f;
+                AddReward(1.0f);
+                parked = true;
+                //Debug.Log(GetCumulativeReward());
+                EndEpisode();
             }
-            else { Debug.Log("car out"); }
+            //Debug.Log("car in");
+            
+        //else { Debug.Log("car out"); }
 
         }
     }
@@ -148,8 +160,20 @@ public class CarAgent : Agent
         if (other.gameObject.CompareTag("target") && !parked)
         {
             AddReward(-0.5f);
-            Debug.Log(GetCumulativeReward());
+            //Debug.Log(GetCumulativeReward());
             timer = 2.0f;
+            
+        }
+
+        if (other.gameObject.CompareTag("target") && parked)
+        {
+            parked = false;
+        }
+
+        if (other.gameObject.CompareTag("parking_floor"))
+        {
+            inParking = false;
+            //Debug.Log(inParking);
         }
     }
 
@@ -159,16 +183,33 @@ public class CarAgent : Agent
         {
             if (collider.GetGroundHit(out WheelHit hit))
             {
-                if (hit.collider.gameObject.layer == 3)
+                if (hit.collider.gameObject.CompareTag("floor_obstacle"))
                 {
-                    AddReward(-1f);
-                    Debug.Log(GetCumulativeReward());
+                    AddReward(-0.01f);
+                    //Debug.Log(GetCumulativeReward());
                     return;
                 }
 
             }
         }
     }
+
+    private void checkParkingDistance()
+    {
+        float distance = Vector3.Distance(carTransform.position, parkingEntrance.position);
+        if (!inParking)
+        {
+            AddReward(-0.0001f * distance);
+        }
+        //Debug.Log(GetCumulativeReward());
+        if(distance > parkingDistanceTreshold)
+        {
+            EndEpisode();
+        }
+        //Debug.Log(GetCumulativeReward());
+    }
+
+
 
 
 }

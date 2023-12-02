@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4872864705531724}
+  - component: {fileID: -3449583422300535640}
   m_Layer: 3
   m_Name: Building_A_prefab
   m_TagString: Untagged
@@ -32,6 +33,19 @@ Transform:
   - {fileID: 4812498178293638}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3449583422300535640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1164899596817984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cae6cb80e41a1c408aeb75721663eaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagName: obstacle
 --- !u!1 &1283467027243318
 GameObject:
   m_ObjectHideFlags: 0
