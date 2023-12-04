@@ -20,7 +20,6 @@ public class CarAgent : Agent
     public Transform parkingEntrance;
     private bool parked;
     private bool inParking;
-    public GameObject parkingFloor;
     public float parkingDistanceTreshold;
     // Start is called before the first frame update
     void Start()
