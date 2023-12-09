@@ -6,6 +6,8 @@ using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using System.Threading;
 using Unity.VisualScripting;
+using UnityEngine.UI;
+using TMPro;
 
 public class CarAgent : Agent
 {
@@ -14,13 +16,15 @@ public class CarAgent : Agent
     Collider coll;
     Transform carTransform;
     Rigidbody rBody;
-    private float timer = 2f;
+    private float timer = 0.3f;
     public BoxCollider spawnArea1;
     public BoxCollider spawnArea2;
     public Transform parkingEntrance;
     private bool parked;
     private bool inParking;
     public float parkingDistanceTreshold;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,16 +41,17 @@ public class CarAgent : Agent
         float randomZ;
 
         // Genera posizioni casuali nelle due zone ortogonali
-        if (Random.Range(0, 2) == 0)
-        {
-            randomX = Random.Range(spawnArea1.bounds.min.x, spawnArea1.bounds.max.x);
-            randomZ = Random.Range(spawnArea1.bounds.min.z, spawnArea1.bounds.max.z);
-        }
+        //if (Random.Range(0, 2) == 0)
+        
+        randomX = Random.Range(spawnArea1.bounds.min.x, spawnArea1.bounds.max.x);
+        randomZ = Random.Range(spawnArea1.bounds.min.z, spawnArea1.bounds.max.z);
+        
+        /*
         else
         {
             randomX = Random.Range(spawnArea2.bounds.min.x, spawnArea2.bounds.max.x);
             randomZ = Random.Range(spawnArea2.bounds.min.z, spawnArea2.bounds.max.z);
-        }
+        }*/
 
         Vector3 spawnPosition = new Vector3(randomX, 0.1f, randomZ);
         Vector3 rotationAngles = new Vector3(0f, Random.Range(0,360), 0f); // Modifica questi valori a seconda delle tue esigenze
@@ -79,6 +84,7 @@ public class CarAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(carController.carSpeed);
+        sensor.AddObservation(carTransform.localPosition);
        
     }
 
@@ -87,7 +93,8 @@ public class CarAgent : Agent
         carController.move(actions.ContinuousActions[0], actions.ContinuousActions[1]);
         CheckGroundHit();
         checkParkingDistance();
-        Debug.Log(GetCumulativeReward());
+        AddReward(-1.0f / MaxStep);
+        //Debug.Log("Cumulative reward: " + GetCumulativeReward());
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -120,12 +127,12 @@ public class CarAgent : Agent
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("target"))
+        /*if (other.gameObject.CompareTag("target"))
         {
             AddReward(0.5f);
             //Debug.Log(GetCumulativeReward());
         }
-
+        */
         if(other.gameObject.CompareTag("parking_floor"))
         {
             inParking = true;
@@ -137,16 +144,23 @@ public class CarAgent : Agent
     {
         if (other.gameObject.CompareTag("target") && (other.bounds.Contains(coll.bounds.max) && other.bounds.Contains(coll.bounds.min)))
         {
+            //AddReward(1.0f);
+            //parked = true;
+            //Debug.Log(GetCumulativeReward());
+            //EndEpisode();
+
             // Decrementa il timer
+            
             timer -= Time.deltaTime;
             if(timer <= 0.0f)
             {
-                timer = 2.0f;
+                timer = 0.3f;
                 AddReward(1.0f);
                 parked = true;
                 //Debug.Log(GetCumulativeReward());
                 EndEpisode();
             }
+            
             //Debug.Log("car in");
             
         //else { Debug.Log("car out"); }
@@ -155,14 +169,14 @@ public class CarAgent : Agent
     }
 
     private void OnTriggerExit(Collider other)
-    {
+    {  /*
         if (other.gameObject.CompareTag("target") && !parked)
         {
             AddReward(-0.5f);
             //Debug.Log(GetCumulativeReward());
             timer = 2.0f;
-            
-        }
+         }
+       */ 
 
         if (other.gameObject.CompareTag("target") && parked)
         {
@@ -184,7 +198,7 @@ public class CarAgent : Agent
             {
                 if (hit.collider.gameObject.CompareTag("floor_obstacle"))
                 {
-                    AddReward(-0.01f);
+                    AddReward(-0.1f);
                     //Debug.Log(GetCumulativeReward());
                     return;
                 }

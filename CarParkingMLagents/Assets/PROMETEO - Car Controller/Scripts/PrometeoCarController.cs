@@ -11,15 +11,17 @@ something useful for your game. Best regards, Mena.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PrometeoCarController : MonoBehaviour
 {
+     
 
     //CAR SETUP
 
-      [Space(20)]
+    [Space(20)]
       //[Header("CAR SETUP")]
       [Space(10)]
       [Range(20, 190)]
@@ -93,9 +95,10 @@ public class PrometeoCarController : MonoBehaviour
       public bool useUI = false;
       public Text carSpeedText; // Used to store the UI object that is going to show the speed of the car.
 
+
     //SOUNDS
 
-      [Space(20)]
+    [Space(20)]
       //[Header("Sounds")]
       [Space(10)]
       //The following variable lets you to set up sounds for your car such as the car engine or tire screech sounds.
@@ -161,6 +164,7 @@ public class PrometeoCarController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
       //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
       //gameObject. Also, we define the center of mass of the car with the Vector3 given
       //in the inspector.
@@ -781,8 +785,10 @@ public class PrometeoCarController : MonoBehaviour
     //method to move the car given the neural network output
     public void move(float throttle, float steering)
     {
-        //go forward
-        if( throttle > 0)
+        
+
+        //GoForward
+        if( throttle > 0.15f)
         {
             //If the forces aplied to the rigidbody in the 'x' asis are greater than
             //3f, it means that the car is losing traction, then the car will start emitting particle systems.
@@ -837,7 +843,7 @@ public class PrometeoCarController : MonoBehaviour
         }
 
         //go reverse
-        else if( throttle < 0) 
+        else if(throttle < 0.15f)
         {
             //If the forces aplied to the rigidbody in the 'x' asis are greater than
             //3f, it means that the car is losing traction, then the car will start emitting particle systems.
@@ -912,7 +918,7 @@ public class PrometeoCarController : MonoBehaviour
         frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, steeringAngle, steeringSpeed);
         frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, steeringAngle, steeringSpeed);
 
-        //Debug.Log("Throttle: " + throttleAxis);
+        Debug.Log(Mathf.Approximately(throttle, 0.01f));
         //Debug.Log("Steering: " + steeringAxis);
 
     }
