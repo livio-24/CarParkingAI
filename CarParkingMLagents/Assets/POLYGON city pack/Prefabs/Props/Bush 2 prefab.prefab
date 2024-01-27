@@ -93,7 +93,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4661298526496350}
-  - component: {fileID: 2222962940823701372}
   m_Layer: 3
   m_Name: Bush 2 prefab
   m_TagString: obstacle
@@ -117,16 +116,3 @@ Transform:
   - {fileID: 4091648507630204}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2222962940823701372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876599732148902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cae6cb80e41a1c408aeb75721663eaa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagName: obstacle

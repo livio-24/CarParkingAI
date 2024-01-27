@@ -11,6 +11,10 @@ TagManager:
   - parking_floor
   - floor_obstacle
   - obstacle
+  - lines
+  - sidewalk_target
+  - wall_target
+  - car
   layers:
   - Default
   - TransparentFX
@@ -18,9 +22,9 @@ TagManager:
   - obstacle
   - Water
   - UI
-  - target
-  - floor_obstacle
-  - 
+  - lines
+  - car
+  - wall
   - 
   - 
   - 

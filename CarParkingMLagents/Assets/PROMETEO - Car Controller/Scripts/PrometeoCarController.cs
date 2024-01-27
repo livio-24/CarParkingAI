@@ -918,7 +918,7 @@ public class PrometeoCarController : MonoBehaviour
         frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, steeringAngle, steeringSpeed);
         frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, steeringAngle, steeringSpeed);
 
-        Debug.Log(Mathf.Approximately(throttle, 0.01f));
+        //Debug.Log(Mathf.Approximately(throttle, 0.01f));
         //Debug.Log("Steering: " + steeringAxis);
 
     }

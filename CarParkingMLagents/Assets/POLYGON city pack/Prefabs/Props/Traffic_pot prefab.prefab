@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4647384027779008}
-  - component: {fileID: -6731861470562464917}
   m_Layer: 3
   m_Name: Traffic_pot prefab
   m_TagString: obstacle
@@ -33,19 +32,6 @@ Transform:
   - {fileID: 4969514472804370}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6731861470562464917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1791774932667290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cae6cb80e41a1c408aeb75721663eaa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagName: obstacle
 --- !u!1 &1837546083915202
 GameObject:
   m_ObjectHideFlags: 0
