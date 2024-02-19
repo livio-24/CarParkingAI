@@ -63,9 +63,9 @@ public class CarAgent2Level1 : Agent
 
         Vector3 dirToTarget = (nearestLot.transform.position - transform.position).normalized;
         sensor.AddObservation(transform.position.normalized);
-        sensor.AddObservation(this.transform.InverseTransformPoint(nearestLot.transform.position));
-        sensor.AddObservation(this.transform.InverseTransformVector(rb.velocity.normalized));
-        sensor.AddObservation(this.transform.InverseTransformDirection(dirToTarget));
+        sensor.AddObservation(transform.InverseTransformPoint(nearestLot.transform.position));
+        sensor.AddObservation(transform.InverseTransformVector(rb.velocity.normalized));
+        sensor.AddObservation(transform.InverseTransformDirection(dirToTarget));
         sensor.AddObservation(transform.forward);
         sensor.AddObservation(transform.right);
         // sensor.AddObservation(StepCount / MaxStep);

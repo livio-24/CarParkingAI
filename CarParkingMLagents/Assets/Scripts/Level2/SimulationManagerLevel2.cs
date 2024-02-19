@@ -41,7 +41,7 @@ public class SimulationManagerLevel2 : MonoBehaviour
             float randomX;
             float randomZ;
             float randomAngle;
-            int rand = Random.Range(0, 1);
+            int rand = Random.Range(0, 3);
             float[] ang_near_slot = new float[] { -90f, 90f, 180f, -180f, 0f };
 
             if (rand == 0)
@@ -109,8 +109,8 @@ public class SimulationManagerLevel2 : MonoBehaviour
             if (lot != null)
             {
                 GameObject carInstance = Instantiate(carPrefab);
-                carInstance.tag = "car";
-                carInstance.layer = 7;
+                //carInstance.tag = "car";
+                //carInstance.layer = 7;
                 if (lot.transform.position.z > 0)
                     carInstance.transform.position = new Vector3(lot.transform.position.x, 0f, lot.transform.position.z - 5f);
                 else
@@ -129,6 +129,19 @@ public class SimulationManagerLevel2 : MonoBehaviour
     public ParkingLotLevel2 GetRandomEmptyParkingSlot()
     {
         return parkingLots.Where(r => r.IsOccupied == false).OrderBy(r => Guid.NewGuid()).FirstOrDefault();
+    }
+
+    public ParkingLotLevel2 GetNearestEmptyParkingSlot()
+    {
+        return parkingLots.Where(r => r.IsOccupied == false).FirstOrDefault();
+    }
+
+    // Metodo per trovare il parcheggio libero più vicino
+    public ParkingLotLevel2 GetNearestEmptyParkingSlot2()
+    {
+        //Debug.Log(emptyParkingLots);
+        return parkingLots.Where(lot => !lot.IsOccupied).OrderBy(lot => Vector3.Distance(agent.transform.position, lot.transform.position)).FirstOrDefault();
+        
     }
 
 }

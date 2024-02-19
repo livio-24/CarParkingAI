@@ -30,10 +30,6 @@ public class CarAgent2Level0 : Agent
         nearestLot = null;
     }
 
-    public override void OnActionReceived(ActionBuffers actions)
-    {
-        controller.move(actions.ContinuousActions[0], actions.ContinuousActions[1]);
-    }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
@@ -52,6 +48,11 @@ public class CarAgent2Level0 : Agent
         }
     }
 
+    public override void OnActionReceived(ActionBuffers actions)
+    {
+        controller.move(actions.ContinuousActions[0], actions.ContinuousActions[1]);
+    }
+
     public override void CollectObservations(VectorSensor sensor)
     {
         if (nearestLot == null)
@@ -62,12 +63,11 @@ public class CarAgent2Level0 : Agent
 
         Vector3 dirToTarget = (nearestLot.transform.position - transform.position).normalized;
         sensor.AddObservation(transform.position.normalized);
-        sensor.AddObservation(this.transform.InverseTransformPoint(nearestLot.transform.position));
-        sensor.AddObservation(this.transform.InverseTransformVector(rb.velocity.normalized));
-        sensor.AddObservation(this.transform.InverseTransformDirection(dirToTarget));
+        sensor.AddObservation(transform.InverseTransformPoint(nearestLot.transform.position));
+        sensor.AddObservation(transform.InverseTransformVector(rb.velocity.normalized));
+        sensor.AddObservation(transform.InverseTransformDirection(dirToTarget));
         sensor.AddObservation(transform.forward);
         sensor.AddObservation(transform.right);
-        // sensor.AddObservation(StepCount / MaxStep);
         float velocityAlignment = Vector3.Dot(dirToTarget, rb.velocity.normalized);
         //Debug.Log(velocityAlignment);
         AddReward(0.001f * velocityAlignment);

@@ -74,6 +74,7 @@ public class SimulationManagerLevel1 : MonoBehaviour
         parkingLots[4].IsOccupied = true;
         parkingLots[5].IsOccupied = true;
         parkingLots[8].IsOccupied = true;
+        parkingLots[10].IsOccupied = true;
         parkingLots[12].IsOccupied = true;
         parkingLots[14].IsOccupied = true;
         parkingLots[15].IsOccupied = true;

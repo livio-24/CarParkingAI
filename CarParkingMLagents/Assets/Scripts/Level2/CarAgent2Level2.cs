@@ -34,6 +34,7 @@ public class CarAgent2Level2 : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+
         controller.move(actions.ContinuousActions[0], actions.ContinuousActions[1]);
     }
 
@@ -60,15 +61,21 @@ public class CarAgent2Level2 : Agent
         {
             if (nearestLot == null)
             {
-                nearestLot = simulationManager.GetRandomEmptyParkingSlot();
+                nearestLot = simulationManager.GetNearestEmptyParkingSlot2();
+                if(nearestLot == null)
+                {
+                    Debug.Log(nearestLot);
+                    return;
+                }
+                
                 //AddMaterial();
             }
 
             Vector3 dirToTarget = (nearestLot.transform.position - transform.position).normalized;
             sensor.AddObservation(transform.position.normalized);
-            sensor.AddObservation(this.transform.InverseTransformPoint(nearestLot.transform.position));
-            sensor.AddObservation(this.transform.InverseTransformVector(rb.velocity.normalized));
-            sensor.AddObservation(this.transform.InverseTransformDirection(dirToTarget));
+            sensor.AddObservation(transform.InverseTransformPoint(nearestLot.transform.position));
+            sensor.AddObservation(transform.InverseTransformVector(rb.velocity.normalized));
+            sensor.AddObservation(transform.InverseTransformDirection(dirToTarget));
             sensor.AddObservation(transform.forward);
             sensor.AddObservation(transform.right);
             // sensor.AddObservation(StepCount / MaxStep);
@@ -84,10 +91,9 @@ public class CarAgent2Level2 : Agent
         }
     }
 
-    /*
+    
     public void AddMaterial()
     {
-        
         Renderer renderer = nearestLot.street_lot.GetComponent<Renderer>();
 
         if (renderer != null)
@@ -132,7 +138,7 @@ public class CarAgent2Level2 : Agent
 
         }
     }
-    */
+    
 
     public IEnumerator ParkingReward(float bonus)
     {
